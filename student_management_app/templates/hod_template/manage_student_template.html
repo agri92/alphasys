@@ -1,0 +1,151 @@
+{% extends 'hod_template/base_template.html' %}
+{% block main_content %}
+  <div class="content-header"><!-- Content Header (Page header) -->
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0 text-dark">
+            <b>Gestión de Alumnos</b>
+          </h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <button onclick="abrir_modal_crear('{% url 'add_student' %}')" class="btn btn-primary float-right"><i class="fas fa-plus"></i><b> Agregar</b></button>
+        </div>
+      </div><!-- /.row -->
+    </div>
+  </div><!-- End Content Header -->
+  <!-- Main content -->
+  {% if messages %}
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>{{ message }}.</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endif %}
+          {% if message.tags == 'success' %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ message }}.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endif %}
+          {% endfor %}
+    {% endif %}
+    <!-- Main content --> 
+    <section class="content">
+      <div class="container-fluid">
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Detalles Alumnos</h3>
+                <div class="card-tools">
+                  <!--<form class="form-inline my-2 my-lg-0">
+                    <input name="searchbar" class="form-control mr-sm-2 float-right" type="text" placeholder="Buscar" aria-label="Search" style="width: 350px;">
+                    <button class="btn btn-default my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+                  </form>-->
+                  <div class="input-group input-group-sm" style="width: 250px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar">
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Estatus</th>
+                      <th>Período</th>
+                      <th>Curso</th>
+                      <th>Último acceso</th>
+                      <th>Fecha Creación</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for student in students %}
+                      <tr>
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.admin.first_name }}</td>
+                        <td>{{ student.admin.last_name }}</td>
+                        <td>{% if student.status == 1 %}
+                          <button class="btn btn-success btn-sm" style="border-radius:15px">Activo</button>
+                          {% elif student.status == 0 %}
+                          <button class="btn btn-danger btn-sm" style="border-radius:15px" disabled>Baja</button>
+                          {% else %}
+                          <button class="btn btn-warning btn-sm" style="border-radius:15px" disabled>Inactivo</button>
+                          {% endif %}
+                        </td>
+                        <td>{{ student.session_year_id.session_start_year }} TO {{ student.session_year_id.session_end_year }}</td>
+                        <td>{{ student.course_id.course_name }}</td>
+                        <td>{{ student.admin.last_login }}</td>
+                        <td>{{ student.admin.date_joined }}</td>
+                        <td>
+                          <a href="/edit_student/{{ student.admin.id }}" class="btn btn-secondary">Editar</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                {% if students.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page=1"><span aria-hidden="true" style="color:black">&laquo;</span></a></li>
+                  <li class="page-item"><a class="page-link" href="?page={{students.previous_page_number}}" style="color:black">Anterior</a></li>
+                  {% else %}
+                  <li class="page-item disabled"><a class="page-link"><span aria-hidden="true" style="color:black">&laquo;</span></a></li>
+                  <li class="page-item disabled"><a class="page-link">Anterior</a></li>
+                {% endif %}
+
+                {% for i in students.paginator.page_range %}
+                  {% if students.number == i %}
+                    <li class="page-item active" aria-current="?page"><a href="?page={{forloop.counter}}" class="page-link">{{ forloop.counter }}</a></li>
+                  {% else %}
+                    <li class="page-item" aria-current="?page"><a href="?page={{forloop.counter}}" class="page-link" style="color:black">{{ forloop.counter }}</a></li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if students.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{students.next_page_number}}" style="color:black" >Siguiente</a></li>
+                  <li class="page-item"><a class="page-link" href="?page={{students.paginator.num_pages}}"><span aria-hidden="true" style="color:black">&raquo;</span></a></li>
+                  {% else %}
+                  <li class="page-item disabled"><a class="page-link">Siguiente</a></li>
+                  <li class="page-item disabled"><a class="page-link"><span aria-hidden="true" style="color:black">&raquo;</span></a></li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+<!-- Blank Modal -->
+<div class="modal fade" id="crear" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+</div>
+
+{% block custom_js %}
+<script type="text/javascript">
+  function abrir_modal_crear(url){
+    $('#crear').load(url, function (){
+      $(this).modal('show');
+    });
+  }
+</script>
+{% endblock custom_js %}
+
+{% endblock main_content %}

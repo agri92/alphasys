@@ -1,0 +1,126 @@
+{% extends 'hod_template/base_template.html' %}
+{% block main_content %}
+    <div class="content-header"><!-- Content Header (Page header) -->
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">
+              <b>Gestión de Alumnos</b>
+            </h1>
+            
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <button hx-get="{% url 'add_student' %}" hx-target="#dialog" class="btn btn-primary float-right"><i class="fas fa-plus"></i><b>&nbsp;Agregar Alumno</b></button>
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </div><!-- End Content Header -->
+    <!-- Main content -->
+    {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>{{ message }}.</strong> 
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% endif %}
+            {% if message.tags == 'success' %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>{{ message }}.</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% endif %}
+            {% endfor %}
+      {% endif %}
+    <section class="content">
+      <div class="container-fluid">
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Detalles Alumnos</h3>
+                <div class="card-tools">
+                  <form class="form-inline my-2 my-lg-0">
+                    <input name="searchbar" class="form-control mr-sm-2 float-right" type="text" placeholder="Buscar" aria-label="Search">
+                    <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+                  </form>
+                  <!-- searchbar 
+                  <div class="input-group input-group-sm" style="width: 400px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-success"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>-->
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Usuario</th>
+                      <th>Email</th>
+                      <th>Dirección</th>
+                      <th>Género</th>
+                      <th>Imagen</th>
+                      <th>Período</th>
+                      <th>Curso</th>
+                      <th>Último acceso</th>
+                      <th>Fecha Creación</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody hx-get="{% url 'student_list_htmx' %}" hx-trigger="load, movieListChanged from:body" hx-target="this">
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                {% if student_pag.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page=1"style="color:black"><b>&laquo</b></a></li>
+                  <li class="page-item"><a class="page-link" href="?page={{student_pag.previous_page_number}}" style="color:black"><b>Anterior</b></a></li>
+                {% endif %}
+                {% for i in nums %}
+                  <li class="page-item"><a href="?page={{forloop.counter}}" class="page-link" style="color:black"><b>{{ forloop.counter }}</b> </a></li>
+                {% endfor %}
+                {% if student_pag.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{student_pag.next_page_number}}" style="color:black"><b>Siguiente</b></a></li>
+                  <li class="page-item"><a class="page-link" href="?page={{student_pag.paginator.num_pages}}" style="color:black"><b>&raquo</b></a></li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+<!-- Placeholder for the modal -->
+<div id="modal" class="modal fade">
+  <div id="dialog" class="modal-dialog" hx-target="this"></div>
+</div>
+
+<!-- Empty toast to show the message -->
+<div class="p-3" style="position: fixed; top: 0; right:0;">
+  <div id="toast" class="toast align-items-center text-white bg-success border-0">
+    <div class="d-flex">
+      <div id="toast-body" class="toast-body"></div>
+      <button type="button" class="close m-2" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock main_content %}
+
