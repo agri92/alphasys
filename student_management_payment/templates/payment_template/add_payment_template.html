@@ -1,0 +1,59 @@
+{% extends 'hod_template/base_template.html' %}
+{% block main_content %}
+    <div class="content-header"><!-- Content Header (Page header) -->
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">
+              <b>Agregar Pago</b>
+            </h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <a href="{% url 'manage_payment' %}" class="btn btn-secondary float-right"><i class="fas fa-arrow-left"></i><b>&nbsp Regresar</b></a>
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </div><!-- End Content Header -->
+  <!-- Main content -->
+  {% if messages %}
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>{{ message }}.</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endif %}
+          {% if message.tags == 'success' %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ message }}.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endif %}
+          {% endfor %}
+    {% endif %}
+    <!-- Main content --> 
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+              <!-- general form elements -->
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Agregar Pago</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                  {% url 'add_payment_save' as action_path %}
+                  {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Agregar Pago" %}
+              </div>
+              <!-- /.card -->
+            </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}

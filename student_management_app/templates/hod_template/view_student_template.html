@@ -1,0 +1,37 @@
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{ student.full_name }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <label><i class="far fa-envelope"></i> E-mail</label>
+                    <p>{{ student.admin.email }}</p>
+                </div>
+                <div class="col-6">
+                    <label><i class="fas fa-phone"></i> Teléfono</label>
+                    <p>{{ student.cell_phone }}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label><i class="fas fa-map-marker-alt"></i> Dirección</label>
+                    <p>{{ student.address }}</p>
+                </div>
+                <div class="col-6">
+                    <label>Detalles</label>
+                    <p>{{ student.details }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+    </div>
+    </div>
+</div>

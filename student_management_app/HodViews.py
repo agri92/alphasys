@@ -11,16 +11,18 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from student_management_app.forms import AddStudentForm, EditStudentForm
+from student_management_app.forms import AddStudentForm, EditStudentForm, AddCourseForm
 from student_management_app.models import CustomUser, Staffs, Courses, Subjects, Students, SessionYearModel, \
     FeedBackStudent, FeedBackStaffs, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport, \
     NotificationStudent, NotificationStaffs
 
+from datetime import datetime
+
 def admin_home(request):
     student_count1=Students.objects.all().count()
-    staff_count=Staffs.objects.all().count()
-    subject_count=Subjects.objects.all().count()
-    course_count=Courses.objects.all().count()
+    active_students=Students.objects.filter(status=1).count()
+    inactive_students=Students.objects.filter(status=2).count()
+    students_out=Students.objects.filter(status=0).count()
 
     course_all=Courses.objects.all()
     course_name_list=[]
@@ -67,7 +69,7 @@ def admin_home(request):
         student_name_list.append(student.admin.username)
 
 
-    return render(request,"hod_template/home_content.html",{"student_count":student_count1,"staff_count":staff_count,"subject_count":subject_count,"course_count":course_count,"course_name_list":course_name_list,"subject_count_list":subject_count_list,"student_count_list_in_course":student_count_list_in_course,"student_count_list_in_subject":student_count_list_in_subject,"subject_list":subject_list,"staff_name_list":staff_name_list,"attendance_present_list_staff":attendance_present_list_staff,"attendance_absent_list_staff":attendance_absent_list_staff,"student_name_list":student_name_list,"attendance_present_list_student":attendance_present_list_student,"attendance_absent_list_student":attendance_absent_list_student})
+    return render(request,"hod_template/home_content.html",{"student_count":student_count1,"active_students":active_students,"inactive_students":inactive_students,"students_out":students_out,"course_name_list":course_name_list,"subject_count_list":subject_count_list,"student_count_list_in_course":student_count_list_in_course,"student_count_list_in_subject":student_count_list_in_subject,"subject_list":subject_list,"staff_name_list":staff_name_list,"attendance_present_list_staff":attendance_present_list_staff,"attendance_absent_list_staff":attendance_absent_list_staff,"student_name_list":student_name_list,"attendance_present_list_student":attendance_present_list_student,"attendance_absent_list_student":attendance_absent_list_student})
 
 def add_staff(request):
     return render(request,"hod_template/add_staff_template.html")
@@ -93,16 +95,23 @@ def add_staff_save(request):
             return HttpResponseRedirect(reverse("add_staff"))
 
 def add_course(request):
-    return render(request,"hod_template/add_course_template.html")
+    form=AddCourseForm()
+    return render(request,"hod_template/add_course_template.html",{"form":form})
 
 def add_course_save(request):
     if request.method!="POST":
         return HttpResponse("Method Not Allowed")
     else:
-        course=request.POST.get("course")
+        course_name=request.POST.get("course_name")
+        duracion=request.POST.get("duracion")
+        costo_ins=request.POST.get("costo_ins")
+        costo_mat=request.POST.get("costo_mat")
+        costo_mes=request.POST.get("costo_mes")
+        descuento_pp=request.POST.get("descuento_pp")
+        detalles=request.POST.get("detalles")
         try:
-            course_model=Courses(course_name=course)
-            course_model.save()
+            course=Courses.objects.create(course_name=course_name,duracion=duracion,costo_ins=costo_ins,costo_mat=costo_mat,costo_mes=costo_mes,descuento_pp=descuento_pp,detalles=detalles)
+            course.save()
             messages.success(request,"Successfully Added Course")
             return HttpResponseRedirect(reverse("add_course"))
         except Exception as e:
@@ -125,11 +134,14 @@ def add_student_save(request):
             username=form.cleaned_data["username"]
             email=form.cleaned_data["email"]
             password=form.cleaned_data["password"]
-            address=form.cleaned_data["address"]
-            session_year_id=form.cleaned_data["session_year_id"]
-            course_id=form.cleaned_data["course"]
             sex=form.cleaned_data["sex"]
+            cell_phone=form.cleaned_data["cell_phone"]
+            address=form.cleaned_data["address"]
+            course_id=form.cleaned_data["course"]
+            start_date=form.cleaned_data["start_date"]
+            end_date=form.cleaned_data["end_date"]
             status=form.cleaned_data["status"]
+            details=form.cleaned_data["details"]
 
             profile_pic=request.FILES['profile_pic']
             fs=FileSystemStorage()
@@ -141,17 +153,19 @@ def add_student_save(request):
                 user.students.address=address
                 course_obj=Courses.objects.get(id=course_id)
                 user.students.course_id=course_obj
-                session_year=SessionYearModel.object.get(id=session_year_id)
-                user.students.session_year_id=session_year
                 user.students.gender=sex
                 user.students.profile_pic=profile_pic_url
                 user.students.status=status
+                user.students.cell_phone=cell_phone
+                user.students.details=details
+                user.students.start_date=start_date
+                user.students.end_date=end_date
                 user.save()
                 messages.success(request,"Successfully Added Student")
-                return HttpResponseRedirect(reverse("manage_student"))
+                return HttpResponseRedirect(reverse("add_student"))
             except:
                 messages.error(request,"Failed to Add Student")
-                return HttpResponseRedirect(reverse("manage_student"))
+                return HttpResponseRedirect(reverse("add_student"))
         else:
             form=AddStudentForm(request.POST)
             return render(request, "hod_template/add_student_template.html", {"form": form})
@@ -181,28 +195,28 @@ def add_subject_save(request):
             messages.error(request,"Failed to Add Subject")
             return HttpResponseRedirect(reverse("add_subject"))
 
-
 def manage_staff(request):
     staffs=Staffs.objects.all()
     return render(request,"hod_template/manage_staff_template.html",{"staffs":staffs})
 
 def manage_student(request):
-    p = Paginator(Students.objects.all(), 10)
+    if 'searchbar' in request.GET:
+        searchbar = request.GET['searchbar']
+        students = Students.objects.filter(admin__first_name__icontains=searchbar) | Students.objects.filter(admin__last_name__icontains=searchbar)
+    else:
+        students = Students.objects.all().order_by('created_at')
+
+    p = Paginator(students, 10)
     page = request.GET.get('page', 1)
-    #students = p.get_page(page)
-    #nums = "a" * students.paginator.num_pages
     try:
         students = p.page(page)
     except PageNotAnInteger:
         students = p.page(1)
     except EmptyPage:
         students = p.page(p.num_pages)
+    
 
-    context = {
-        #'nums':nums,
-        'students':students,
-    }
-    return render(request, "hod_template/manage_student_template.html", context)
+    return render(request, "hod_template/manage_student_template.html",{"students":students})
 
 def manage_course(request):
     courses=Courses.objects.all()
@@ -211,6 +225,7 @@ def manage_course(request):
 def manage_subject(request):
     subjects=Subjects.objects.all()
     return render(request,"hod_template/manage_subject_template.html",{"subjects":subjects})
+
 
 def edit_staff(request,staff_id):
     staff=Staffs.objects.get(admin=staff_id)
@@ -244,6 +259,10 @@ def edit_staff_save(request):
             messages.error(request,"Failed to Edit Staff")
             return HttpResponseRedirect(reverse("edit_staff",kwargs={"staff_id":staff_id}))
 
+def view_student(request, student_id):
+    student=Students.objects.get(admin=student_id)
+    return render(request, "hod_template/view_student_template.html", {"student":student})
+
 def edit_student(request,student_id):
     request.session['student_id']=student_id
     student=Students.objects.get(admin=student_id)
@@ -252,11 +271,14 @@ def edit_student(request,student_id):
     form.fields['first_name'].initial=student.admin.first_name
     form.fields['last_name'].initial=student.admin.last_name
     form.fields['username'].initial=student.admin.username
+    form.fields['cell_phone'].initial=student.cell_phone
+    form.fields['sex'].initial=student.gender
     form.fields['address'].initial=student.address
     form.fields['course'].initial=student.course_id.id
-    form.fields['sex'].initial=student.gender
-    form.fields['session_year_id'].initial=student.session_year_id.id
+    form.fields['start_date'].initial=student.start_date
+    form.fields['end_date'].initial=student.end_date
     form.fields['status'].initial=student.status
+    form.fields['details'].initial=student.details
     return render(request,"hod_template/edit_student_template.html",{"form":form,"id":student_id,"username":student.admin.username})
 
 def edit_student_save(request):
@@ -269,15 +291,18 @@ def edit_student_save(request):
 
         form=EditStudentForm(request.POST,request.FILES)
         if form.is_valid():
-            first_name = form.cleaned_data["first_name"]
-            last_name = form.cleaned_data["last_name"]
-            username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
-            address = form.cleaned_data["address"]
-            session_year_id=form.cleaned_data["session_year_id"]
-            course_id = form.cleaned_data["course"]
-            sex = form.cleaned_data["sex"]
-            status = form.cleaned_data["status"]
+            first_name=form.cleaned_data["first_name"]
+            last_name=form.cleaned_data["last_name"]
+            username=form.cleaned_data["username"]
+            email=form.cleaned_data["email"]
+            sex=form.cleaned_data["sex"]
+            cell_phone=form.cleaned_data["cell_phone"]
+            address=form.cleaned_data["address"]
+            course_id=form.cleaned_data["course"]
+            start_date=form.cleaned_data["start_date"]
+            end_date=form.cleaned_data["end_date"]
+            status=form.cleaned_data["status"]
+            details=form.cleaned_data["details"]
 
             if request.FILES.get('profile_pic',False):
                 profile_pic=request.FILES['profile_pic']
@@ -286,7 +311,6 @@ def edit_student_save(request):
                 profile_pic_url=fs.url(filename)
             else:
                 profile_pic_url=None
-
 
             try:
                 user=CustomUser.objects.get(id=student_id)
@@ -297,15 +321,19 @@ def edit_student_save(request):
                 user.save()
 
                 student=Students.objects.get(admin=student_id)
-                student.address=address
-                session_year = SessionYearModel.object.get(id=session_year_id)
-                student.session_year_id = session_year
                 student.gender=sex
+                student.cell_phone=cell_phone
+                student.address=address
                 course=Courses.objects.get(id=course_id)
                 student.course_id=course
+                student.start_date=start_date
+                student.end_date=end_date
                 student.status=status
+                student.details=details
+
                 if profile_pic_url!=None:
                     student.profile_pic=profile_pic_url
+                
                 student.save()
                 del request.session['student_id']
                 messages.success(request,"Successfully Edited Student")

@@ -1,8 +1,16 @@
 {% extends 'hod_template/base_template.html' %}
-{% block page_title %}
-Inicio
-{% endblock page_title %}
 {% block main_content %}
+    <div class="content-header"><!-- Content Header (Page header) -->
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">
+              <b>Home</b>
+            </h1>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div>
+    </div><!-- End Content Header -->
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -13,7 +21,7 @@ Inicio
               <div class="inner">
                 <h3>{{ student_count }}</h3>
 
-                <p>Alumnos</p>
+                <p>Total Alumnos</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
@@ -26,9 +34,9 @@ Inicio
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>{{ staff_count }}</h3>
+                <h3>{{ active_students }}</h3>
 
-                <p>Maestros</p>
+                <p>Activos</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
@@ -41,9 +49,9 @@ Inicio
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>{{ course_count }}</h3>
+                <h3>{{ inactive_students }}</h3>
 
-                <p>Cursos</p>
+                <p>Inactivos</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
@@ -56,9 +64,9 @@ Inicio
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>{{ subject_count }}</h3>
+                <h3>{{ students_out }}</h3>
 
-                <p>-</p>
+                <p>Bajas</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>

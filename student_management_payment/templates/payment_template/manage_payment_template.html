@@ -1,0 +1,97 @@
+{% extends 'hod_template/base_template.html' %}
+{% block main_content %}
+<div class="content-header"><!-- Content Header (Page header) -->
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">
+          <b>Pagos</b>
+        </h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <a href="{% url 'add_payment' %}" class="btn btn-primary float-right"><i class="fas fa-plus"></i><b> Agregar</b></a>
+      </div>
+    </div><!-- /.row -->
+  </div>
+</div><!-- End Content Header -->
+<!-- Main content -->
+{% if messages %}
+      {% for message in messages %}
+      {% if message.tags == 'error' %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>{{ message }}.</strong> 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endif %}
+      {% if message.tags == 'success' %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ message }}.</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endif %}
+      {% endfor %}
+{% endif %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Detalles Pagos</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Importe</th>
+                      <th>Metodo de pago</th>
+                      <th>Tipo de pago</th>
+                      <th>Detalles</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for course in courses %}
+                    <tr>
+                      <td>{{ course.id }}</td>
+                      <td>{{ course.course_name }}</td>
+                      <td>{{ course.duracion }}</td>
+                      <td>{{ course.costo_ins }}</td>
+                      <td>{{ course.costo_mat }}</td>
+                      <td>{{ course.costo_mes }}</td>
+                      <td>{{ course.descuento_pp }}</td>
+                      <td>{{ course.detalles }}</td>
+                      <td><a href="/edit_course/{{ course.id }}" class="btn btn-success">Edit</a></td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

@@ -46,11 +46,14 @@
     <h4 style="margin-left: 10px;margin-top: 5px;">Instituto de inglés Alpha Master | Admin Panel</h4>
     <ul class="navbar-nav ml-auto">
       <!-- Messages Dropdown Menu -->
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'logout' %}">
-          Salir
-        </a>
-      </li>
+      <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user-circle"></i><span>&nbsp {{ user.username }}</span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-lg-right">
+          <a class="dropdown-item" href="{% url 'admin_profile' %}">Mi perfil</a>
+        </div>
+      </div>
     </ul>
 
     <!-- Right navbar links -->
@@ -63,23 +66,23 @@
   <!-- Content Wrapper. Contains page content -->
    <div class="content-wrapper">
        <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <!--<div class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row">
           <div class="col-sm-6">
             <h1 class="m-0 text-dark">
                 {% block page_title %}
                 {% endblock page_title %}
             </h1>
-          </div><!-- /.col -->
-          <!--<div class="col-sm-6">
+          </div>
+          <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Home</a></li>
             </ol>
-          </div><! /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
+          </div>
+        </div>
+      </div>
+    </div>-->
     <!-- /.content-header -->
      {% block main_content %}{% endblock main_content %}
 

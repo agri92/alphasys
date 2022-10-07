@@ -11,7 +11,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
         user=request.user
         if user.is_authenticated:
             if user.user_type == "1":
-                if modulename == "student_management_app.HodViews":
+                if modulename == "student_management_app.HodViews" or modulename == "student_management_payment.views":
                     pass
                 elif modulename == "student_management_app.views" or modulename == "django.views.static":
                     pass

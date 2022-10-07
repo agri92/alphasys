@@ -1,8 +1,19 @@
 {% extends 'hod_template/base_template.html' %}
-{% block page_title %}
-Manage Staff
-{% endblock page_title %}
 {% block main_content %}
+<div class="content-header"><!-- Content Header (Page header) -->
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">
+          <b>Staff</b>
+        </h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <a href="{% url 'add_course' %}" class="btn btn-primary float-right"><i class="fas fa-plus"></i><b> Agregar</b></a>
+      </div>
+    </div><!-- /.row -->
+  </div>
+</div><!-- End Content Header -->
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
