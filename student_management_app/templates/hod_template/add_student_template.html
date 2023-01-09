@@ -1,0 +1,126 @@
+{% extends 'hod_template/base_template.html' %}
+{% block main_content %}
+    <div class="content-header"><!-- Content Header (Page header) -->
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-12">
+            <h1 class="m-0 text-dark">
+              <b>Agregar Alumno</b>
+            </h1>
+          </div><!-- /.col -->
+          <div class="col-sm-12">
+            <a href="{% url 'manage_student' %}" class="btn btn-secondary float-right"><i class="fas fa-arrow-left"></i><b>&nbsp Regresar</b></a>
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </div><!-- End Content Header -->
+  <!-- Main content -->
+  {% if messages %}
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>{{ message }}.</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endif %}
+          {% if message.tags == 'success' %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ message }}.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endif %}
+          {% endfor %}
+    {% endif %}
+    <!-- Main content --> 
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+              <!-- general form elements -->
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Agregar Alumno</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                  {% url 'add_student_save' as action_path %}
+                  {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Agregar Alumno" %}
+              </div>
+              <!-- /.card -->
+            </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        $("#id_email").keyup(function(){
+            var email=$(this).val();
+
+           if(email!=""){
+                $.ajax({
+                    url:'{% url 'check_email_exist' %}',
+                    type:'POST',
+                    data:{email:email}
+                })
+                .done(function(response){
+                    console.log(response);
+                    if(response=="True"){
+                        $(".email_error").remove();
+                        $("<span class='email_error' style='padding: 5px;color: red;font-weight: bold;'>Email Not Available</span>").insertAfter("#id_email");
+                    }
+                    else{
+                        $(".email_error").remove();
+                        $("<span class='email_error' style='padding: 5px;color: green;font-weight: bold;'>Email Available</span>").insertAfter("#id_email");
+                    }
+                })
+                .fail(function(){
+                    console.log("failed");
+                })
+            }
+            else{
+              $(".email_error").remove();
+            }
+
+        });
+
+        $("#id_username").keyup(function(){
+            var username=$(this).val();
+
+            if(username!=""){
+                $.ajax({
+                    url:'{% url 'check_username_exist' %}',
+                    type:'POST',
+                    data:{username:username}
+                })
+                .done(function(response){
+                    console.log(response);
+                    if(response=="True"){
+                        $(".username_error").remove();
+                        $("<span class='username_error' style='padding: 5px;color: red;font-weight: bold;'>Username Not Available</span>").insertAfter("#id_username");
+                    }
+                    else{
+                        $(".username_error").remove();
+                        $("<span class='username_error' style='padding: 5px;color: green;font-weight: bold;'>Username Available</span>").insertAfter("#id_username");
+                    }
+                })
+                .fail(function(){
+                    console.log("failed");
+                })
+            }
+            else{
+                $(".username_error").remove();
+            }
+
+        });
+
+    });
+</script>
+{% endblock custom_js %}

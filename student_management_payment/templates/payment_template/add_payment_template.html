@@ -1,0 +1,72 @@
+{% extends 'hod_template/base_template.html' %}
+{% block main_content %}
+    <div class="content-header"><!-- Content Header (Page header) -->
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">
+              <b>Agregar Pago</b>
+            </h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <a href="{% url 'manage_payment' %}" class="btn btn-secondary float-right"><i class="fas fa-arrow-left"></i><b>&nbsp Regresar</b></a>
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </div><!-- End Content Header -->
+  <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+          <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Agregar Pago</h3>
+              </div>
+              <!-- /.card-header -->
+              {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>{{ message }}.</strong> 
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                {% endif %}
+                {% if message.tags == 'success' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <strong>{{ message }}.</strong>
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                {% endif %}
+                {% endfor %}
+              {% endif %}
+              <!-- form start -->
+              <form method="POST" action="{% url 'add_payment' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card-body">
+                  {% for field in form %}
+                  <div class="form-group">
+                    
+                    {{ field.label_tag }}
+                    {{ field }}
+                  </div>
+                  {% endfor %}
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary btn-block">Agregar Pago</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}

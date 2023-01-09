@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Detalles de cuenta</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <p><label>Nombre:</label> {{ collection.student.admin.first_name }}</p>
+                </div>
+                <div class="col-6">
+                    <p><label>ID:</label> {{ collection.student.id }}</p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-4">
+                    <label>Total Inversión</label>
+                    <p><span>$</span>{{ collection.student.course_id.costo_total }}</p>
+                </div>
+                <div class="col-4">
+                    <label>Total Pagado</label>
+                    <p><span>$</span>{{ collection.total_pagado.total }}</p>
+                </div>
+                <div class="col-4">
+                    <label>Total Por Pagar</label>
+                    <p><span>$</span>{{ collection.por_pagar }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+    </div>
+    </div>
+</div>

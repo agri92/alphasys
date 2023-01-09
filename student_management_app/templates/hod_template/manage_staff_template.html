@@ -1,0 +1,104 @@
+{% extends 'hod_template/base_template.html' %}
+{% block main_content %}
+<div class="content-header"><!-- Content Header (Page header) -->
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">
+          <b>Staff</b>
+        </h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <a href="{% url 'add_course' %}" class="btn btn-primary float-right"><i class="fas fa-plus"></i><b> Agregar</b></a>
+      </div>
+    </div><!-- /.row -->
+  </div>
+</div><!-- End Content Header -->
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Detalles Staff</h3>
+
+                <div class="card-tools">
+                  <form class="input-group">
+                    <input type="text" name="searchbar" class="form-control float-right" placeholder="Buscar">
+                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                  </form>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Usuario</th>
+                      <th>Email</th>
+                      <th>Dirección</th>
+                      <th>Último Acceso</th>
+                      <th>Fecha de Creación</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for staff in staffs %}
+                    <tr>
+                      <td>{{ staff.admin.id }}</td>
+                      <td>{{ staff.admin.first_name }}</td>
+                      <td>{{ staff.admin.last_name }}</td>
+                      <td>{{ staff.admin.username }}</td>
+                      <td>{{ staff.admin.email }}</td>
+                      <td>{{ staff.address }}</td>
+                      <td>{{ staff.admin.last_login }}</td>
+                      <td>{{ staff.admin.date_joined }}</td>
+                      <td>
+                        <a href="/edit_staff/{{ staff.admin.id }}" class="btn btn-primary">Editar</a>
+                        <button onclick="#" class="btn btn-secondary">Ver</button>
+                        <a href="/edit_student/{{ student.admin.id }}" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa-solid fa-trash"></i></a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                {% if staffs.has_previous %}
+                  <!--<li class="page-item"><a class="page-link" href="?page=1"><span aria-hidden="true" >&laquo;</span></a></li>-->
+                  <li class="page-item"><a class="page-link" href="?page={{staffs.previous_page_number}}" >Previo</a></li>
+                  {% else %}
+                  <!--<li class="page-item disabled"><a class="page-link"><span aria-hidden="true" >&laquo;</span></a></li>-->
+                  <li class="page-item disabled"><a class="page-link">Previo</a></li>
+                {% endif %}
+                {% for i in staffs.paginator.page_range %}
+                  {% if staffs.number == i %}
+                    <li class="page-item active" aria-current="?page"><a href="?page={{forloop.counter}}" class="page-link">{{ forloop.counter }}</a></li>
+                  {% else %}
+                    <li class="page-item" aria-current="?page"><a href="?page={{forloop.counter}}" class="page-link" >{{ forloop.counter }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if staffs.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{staffs.next_page_number}}" >Siguiente</a></li>
+                  <!--<li class="page-item"><a class="page-link" href="?page={{students.paginator.num_pages}}"><span aria-hidden="true" >&raquo;</span></a></li>-->
+                  {% else %}
+                  <li class="page-item disabled"><a class="page-link">Siguiente</a></li>
+                  <!--<li class="page-item disabled"><a class="page-link"><span aria-hidden="true">&raquo;</span></a></li>-->
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+
