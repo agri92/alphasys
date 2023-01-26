@@ -19,7 +19,7 @@ urlpatterns = [
     path('do_signup_student',views.do_signup_student,name="do_signup_student"),
     path('admin/', admin.site.urls),
     path('accounts/',include('django.contrib.auth.urls')),
-    path('',views.showDemoPage,name="show_demo"),
+    path('',views.showLandingPage,name="show_landing"),
     path('get_user_details', views.GetUserDetails),
     path('logout_user', views.logout_user,name="logout"),
     path('doLogin',views.doLogin,name="do_login"),
@@ -30,7 +30,7 @@ urlpatterns = [
     path('add_staff_save',HodViews.add_staff_save,name="add_staff_save"),
     path('add_course/', HodViews.add_course,name="add_course"),
     path('add_course_save', HodViews.add_course_save,name="add_course_save"),
-    path('add_student', HodViews.add_student,name="add_student"),
+    path('add_student', HodViews.add_student_form,name="add_student"),
     path('add_student_save', HodViews.add_student_save,name="add_student_save"),
     path('add_subject', HodViews.add_subject,name="add_subject"),
     path('add_subject_save', HodViews.add_subject_save,name="add_subject_save"),
@@ -115,8 +115,5 @@ urlpatterns = [
 
     #     Payment URL Path
     path('payment/', include('student_management_payment.urls')),
-
-    #     Landing URL Path
-    path('landing/', include('student_management_landing.urls')),
     
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

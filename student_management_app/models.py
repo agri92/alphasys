@@ -74,6 +74,15 @@ class Subjects(models.Model):
     updated_at=models.DateTimeField(auto_now_add=True)
     objects=models.Manager()
 
+
+class StudentStatus(models.Model):
+    id=models.AutoField(primary_key=True)
+    name=models.CharField(max_length=50)
+    code=models.CharField(max_length=2, null=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now_add=True)
+    objects=models.Manager()
+
 class Students(models.Model):
     id=models.AutoField(primary_key=True)
     admin=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
@@ -84,11 +93,9 @@ class Students(models.Model):
     course_id=models.ForeignKey(Courses,on_delete=models.DO_NOTHING)
     start_date=models.DateField()
     end_date=models.DateField()
-    STATUS = (('1','Activo'),
-              ('2','Baja'),
-              ('3','Inactivo'),
-              )
-    status=models.CharField(max_length=200, null=True, choices=STATUS, default=1)
+    status_id=models.ForeignKey(StudentStatus,on_delete=models.DO_NOTHING)
+    status_choices=((1,"Activo"),(2,"Inactivo"),(3,"Baja"))
+    status=models.CharField(max_length=150,choices=status_choices,default=1)
     details=models.CharField(max_length=255, blank=True, null=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)

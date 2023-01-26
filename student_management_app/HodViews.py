@@ -11,10 +11,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from student_management_app.forms import AddStudentForm, EditStudentForm, AddCourseForm
+from student_management_app.forms import AddStudentForm, EditStudentForm, AddCourseForm, StudentModelForm
 from student_management_app.models import CustomUser, Staffs, Courses, Subjects, Students, SessionYearModel, \
     FeedBackStudent, FeedBackStaffs, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport, \
-    NotificationStudent, NotificationStaffs
+    NotificationStudent, NotificationStaffs, StudentStatus
 
 from datetime import datetime
 
@@ -121,6 +121,18 @@ def add_course_save(request):
             messages.error(request,"Failed To Add Course")
             return HttpResponseRedirect(reverse("add_course"))
 
+def add_student_form(request):
+    form = StudentModelForm()
+    if request.method == "POST":
+        form = StudentModelForm()
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("manage_student"))
+    context={
+        "form":form,
+    }
+    return render(request,"hod_template/add_student_template.html", context)            
+
 def add_student(request):
     form=AddStudentForm()
     return render(request,"hod_template/add_student_template.html",{"form":form})
@@ -144,7 +156,6 @@ def add_student_save(request):
             end_date=form.cleaned_data["end_date"]
             status=form.cleaned_data["status"]
             details=form.cleaned_data["details"]
-
             profile_pic=request.FILES['profile_pic']
             fs=FileSystemStorage()
             filename=fs.save(profile_pic.name,profile_pic)
@@ -168,6 +179,7 @@ def add_student_save(request):
             except:
                 messages.error(request,"Failed to Add Student")
                 return HttpResponseRedirect(reverse("add_student"))
+                
         else:
             form=AddStudentForm(request.POST)
             return render(request, "hod_template/add_student_template.html", {"form": form})
@@ -216,16 +228,17 @@ def manage_staff(request):
     return render(request,"hod_template/manage_staff_template.html",{"staffs":staffs})
 
 def manage_student(request):
-    #Searchbar
-    #if 'searchbar' in request.GET:
-    #    searchbar = request.GET['searchbar']
-    #    students = Students.objects.filter(admin__first_name__icontains=searchbar) | Students.objects.filter(admin__last_name__icontains=searchbar)
-    #else:
-    students = Students.objects.all().order_by('created_at')
-
+    #Status
+    status_students=StudentStatus.objects.all()
     #CustomFilter
-    myFilter = StudentFilter(request.GET, queryset=students)
-    students = myFilter.qs
+    if 'searchbar' in request.GET:
+        searchbar = request.GET['searchbar']
+        students = Students.objects.filter(admin__first_name__icontains=searchbar) | Students.objects.filter(admin__last_name__icontains=searchbar)
+    elif 'searchbar' in request.GET:
+        searchbar = request.GET['searchbar']
+        students = Students.objects.filter(admin__first_name__icontains=searchbar) | Students.objects.filter(admin__last_name__icontains=searchbar)    
+    else:
+        students = Students.objects.all().order_by('created_at')
 
     #Pagination
     p = Paginator(students, 10)
@@ -237,7 +250,7 @@ def manage_student(request):
     except EmptyPage:
         students = p.page(p.num_pages)
 
-    return render(request, "hod_template/manage_student_template.html",{"students":students, 'myFilter':myFilter})
+    return render(request, "hod_template/manage_student_template.html",{"students":students, "status_students":status_students})
 
 def manage_course(request):
     if 'searchbar' in request.GET:

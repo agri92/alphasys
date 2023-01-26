@@ -45,16 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'fontawesomefree',
-
     'student_management_app',
     'student_management_payment',
-    'student_management_landing',
 
+    'fontawesomefree',
     'django_filters',
-
-    'crispy_forms',
-    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [

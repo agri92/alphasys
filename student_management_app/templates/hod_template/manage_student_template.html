@@ -1,5 +1,4 @@
 {% extends 'hod_template/base_template.html' %}
-{% load crispy_forms_tags %}
 
 {% block main_content %}
     <div class="content-header"><!-- Content Header (Page header) -->
@@ -11,7 +10,7 @@
             </h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
-            <a href="{% url 'add_student' %}" class="btn btn-primary float-right"><i class="fas fa-plus"></i><b> Agregar</b></a>
+            <a href="{% url 'add_student' %}" class="btn btn-primary float-right"><i class="fas fa-plus"></i><b> Agregar Alumno</b></a>
           </div>
         </div><!-- /.row -->
       </div>
@@ -48,28 +47,39 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title"><b>Detalles Alumnos</b></h3>
+                <h3 class="card-title">Detalle de Alumnos</h3>
                 <div class="card-tools">
-                  <form class="input-group" method="GET">
-                    <!-- {{ myFilter.form|crispy }} -->
-                    <div style="margin-right:10px">
-                      {{ myFilter.form.status}}
+                  <div class="row g-3">
+                    <div class="col-sm-5">
+                      <select class="form-select" aria-label="Default select example" name="status">
+                        <option selected>Selecciona un estado</option>
+                        {% for status_students in status_students %}
+                          <option value="{{status_students.name}}">{{status_students.name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-sm-5">
+                      <input type="text" name="searchbar" class="form-control" id="formGroupExampleInput" placeholder="Buscar por nombre">
+                    </div>
+                    <div class="col-sm-2">
+                      <button type="submit" class="btn btn-success">Buscar</button>
+                    </div>
+                  </div>
+                  <!--<form class="input-group" method="GET">
+                    <div>
+                      <p>Filtrar por:&nbsp&nbsp</p>
                     </div>
                     <div style="margin-right:10px">
-                      {{ myFilter.form.course_id }}
-                    </div>
-                    <!-- <div style="margin-right:10px">
-                      <label>Date Range Start:</label>{{ myFilter.form.start_date }}
+                      <select class="form-select" aria-label="Default select example" name="status">
+                        <option selected>Selecciona un estado</option>
+                        <option value="1">One</option>
+                      </select>
                     </div>
                     <div style="margin-right:10px">
-                      <label>Date Range End:</label>{{ myFilter.form.end_date }}
-                    </div>-->
-                    <div style="margin-right:10px">
-                      {{ myFilter.form.name }}
+                      <input type="text" name="searchbar" class="form-control" id="formGroupExampleInput" placeholder="Buscar por nombre">
                     </div>
-                    <!--<input type="text" name="searchbar" class="form-control float-right" placeholder="Buscar">-->
-                    <button type="submit" class="btn btn-success"><i class="fas fa-search"></i></button>
-                  </form>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                  </form>-->
                 </div>
               </div>
               <!-- /.card-header -->
@@ -96,13 +106,7 @@
                         <td>{{ student.full_name }}</td>
                         <td class="text-center"><b><a href="{% url 'manage_course' %}">{{ student.course_id.course_name }}</a></b></td>
                         <td class="text-center">
-                          {% if student.status == "1" %}
                             <button class="btn btn-success" style="width:70px;" disabled>Activo</button>
-                          {% elif student.status == "0" %}
-                            <button class="btn btn-danger" style="width:70px;" disabled>Baja</button>
-                          {% else %}
-                            <button class="btn btn-warning" style="width:70px;" disabled>Inactivo</button>
-                          {% endif %}
                         </td>
                         <td class="text-center">{{ student.start_date }}</td>
                         <td class="text-center">

@@ -15,8 +15,8 @@ from student_management_app.models import CustomUser, Courses, SessionYearModel
 from student_management_system import settings
 
 
-def showDemoPage(request):
-    return render(request,"demo.html")
+def showLandingPage(request):
+    return render(request,"landing_page.html")
 
 def ShowLoginPage(request):
     return render(request,"login_page.html")

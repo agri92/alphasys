@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ChoiceField
 
-from student_management_app.models import Courses, SessionYearModel, Subjects
+from student_management_app.models import Courses, SessionYearModel, Subjects, Students
 
 class ChoiceNoValidation(ChoiceField):
     def validate(self, value):
@@ -9,6 +9,12 @@ class ChoiceNoValidation(ChoiceField):
 
 class DateInput(forms.DateInput):
     input_type = "date"
+
+class StudentModelForm(forms.ModelForm):
+        
+        class Meta:
+            model = Students
+            fields = '__all__'
 
 class AddCourseForm(forms.Form):
     course_name=forms.CharField(label="Nombre", max_length=100, widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Nombre"}))
@@ -121,3 +127,8 @@ class EditResultForm(forms.Form):
     student_ids=ChoiceNoValidation(label="Student",widget=forms.Select(attrs={"class":"form-control"}))
     assignment_marks=forms.CharField(label="Assignment Marks",widget=forms.TextInput(attrs={"class":"form-control"}))
     exam_marks=forms.CharField(label="Exam Marks",widget=forms.TextInput(attrs={"class":"form-control"}))
+
+
+    
+    
+    

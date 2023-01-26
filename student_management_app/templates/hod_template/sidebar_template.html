@@ -92,20 +92,20 @@
             </a>
           </li>
           <li class="nav-item">
-            {% url 'manage_collection' as manage_collection %}
-            <a href="{% url 'manage_collection' %}" class="nav-link {% if request.path == manage_collection %} active {% endif %}">
-              <i class="nav-icon fas fa-hand-holding-usd"></i>
-              <p>
-                Cobranza
-              </p>
-            </a>
-          </li>
-           <li class="nav-item">
             {% url 'manage_payment' as manage_payment %}
             <a href="{% url 'manage_payment' %}" class="nav-link {% if request.path == manage_payment %} active {% endif %}">
               <i class="nav-icon fas fa-dollar-sign"></i>
               <p>
                 Pagos
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'manage_collection' as manage_collection %}
+            <a href="{% url 'manage_collection' %}" class="nav-link {% if request.path == manage_collection %} active {% endif %}">
+              <i class="nav-icon fas fa-hand-holding-usd"></i>
+              <p>
+                Cobranza
               </p>
             </a>
           </li>

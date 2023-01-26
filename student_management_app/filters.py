@@ -9,4 +9,4 @@ class StudentFilter(django_filters.FilterSet):
     name = CharFilter(field_name="admin__first_name", lookup_expr='icontains')
     class Meta:
         model = Students
-        fields = ['status','course_id']
+        fields = ['course_id']
